@@ -186,15 +186,15 @@ jobs:
       #     cosign sign --yes ghcr.io/akselleirv/tf-runner:${{ steps.prep.outputs.VERSION }}
       #     cosign sign --yes ghcr.io/akselleirv/tf-runner-azure:${{ steps.prep.outputs.VERSION }}
       #     cosign sign --yes ghcr.io/akselleirv/branch-planner:${{ steps.prep.outputs.VERSION }}
-      # - name: Generate release manifests
-      #   if: startsWith(github.ref, 'refs/tags/v')
-      #   run: |
-      #     mkdir -p config/release
-      #     kustomize build ./config/crd > ./config/release/${{ env.CONTROLLER }}.crds.yaml
-      #     kustomize build ./config/rbac > ./config/release/${{ env.CONTROLLER }}.rbac.yaml
-      #     kustomize build ./config/manager | yq e '.spec.template.spec.containers[0].env[1].value="ghcr.io/akselleirv/tf-runner:${{ steps.prep.outputs.VERSION }}"' - > ./config/release/${{ env.CONTROLLER }}.deployment.yaml
-      #     kustomize build ./config/package > ./config/release/${{ env.CONTROLLER }}.packages.yaml
-      #     echo '[CHANGELOG](https://github.com/akselleirv/${{ env.CONTROLLER }}/blob/main/CHANGELOG.md)' > ./config/release/notes.md
+      - name: Generate release manifests
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          mkdir -p config/release
+          kustomize build ./config/crd > ./config/release/${{ env.CONTROLLER }}.crds.yaml
+          kustomize build ./config/rbac > ./config/release/${{ env.CONTROLLER }}.rbac.yaml
+          kustomize build ./config/manager | yq e '.spec.template.spec.containers[0].env[1].value="ghcr.io/akselleirv/tf-runner:${{ steps.prep.outputs.VERSION }}"' - > ./config/release/${{ env.CONTROLLER }}.deployment.yaml
+          kustomize build ./config/package > ./config/release/${{ env.CONTROLLER }}.packages.yaml
+          echo '[CHANGELOG](https://github.com/akselleirv/${{ env.CONTROLLER }}/blob/main/CHANGELOG.md)' > ./config/release/notes.md
       - name: Setup Go
         uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5.0.1
         with:
